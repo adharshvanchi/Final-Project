@@ -1,0 +1,22 @@
+---
+title: "Homework 4"
+author: "Adharsh Vanchinathan"
+date: "Due 3/13/2020"
+output:
+  html_document: default
+---
+
+
+Problem Statement: Is the Internet and the ways to access it detrimental to human wellbeing?
+
+```{r setup}
+knitr::opts_chunk$set(eval = T)
+
+suppressPackageStartupMessages(library(tidyverse))
+
+```
+
+Gather and Display Tech Data
+
+- Display Graphs
+- Show Data
