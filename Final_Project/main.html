@@ -377,29 +377,49 @@ suppressPackageStartupMessages(library(tidyverse))</code></pre>
 <ul>
 <li>Internet users/availability</li>
 </ul>
-<pre class="r"><code>net_users &lt;- read.csv(file = &quot;Data/number-of-internet-users-by-country.csv&quot;)</code></pre>
+<pre class="r"><code>net_users &lt;- as.tibble(read.csv(file = &quot;Data/number-of-internet-users-by-country.csv&quot;))</code></pre>
+<pre><code>## Warning: `as.tibble()` is deprecated, use `as_tibble()` (but mind the new semantics).
+## This warning is displayed once per session.</code></pre>
 <ul>
 <li>Smartphone users</li>
 </ul>
-<pre class="r"><code>mobile_use &lt;- read.csv(file = &quot;Data/mobile-cellular-subscriptions-per-100-people.csv&quot;)</code></pre>
+<pre class="r"><code>mobile_use &lt;- as.tibble(read.csv(file = &quot;Data/mobile-cellular-subscriptions-per-100-people.csv&quot;))</code></pre>
 <ul>
 <li>Digital media usage</li>
 </ul>
-<pre class="r"><code>DM_use &lt;- read.csv(file = &quot;Data/daily-hours-spent-with-digital-media-per-adult-user.csv&quot;)</code></pre>
+<pre class="r"><code>DM_use &lt;- as.tibble(read.csv(file = &quot;Data/daily-hours-spent-with-digital-media-per-adult-user.csv&quot;))</code></pre>
 <ul>
 <li>% of pop internet usage</li>
 </ul>
-<pre class="r"><code>net_per &lt;- read.csv(file = &quot;Data/share-of-individuals-using-the-internet.csv&quot;)</code></pre>
+<pre class="r"><code>net_per &lt;- as.tibble(read.csv(file = &quot;Data/share-of-individuals-using-the-internet.csv&quot;))</code></pre>
 <ul>
-<li><p>Tech market share</p></li>
-<li><p>Global Population Data</p></li>
-<li><p>Economic data</p>
+<li>Global Population Data</li>
+</ul>
+<pre class="r"><code>world_pop &lt;- as.tibble(read.csv(file = &quot;Data/population.csv&quot;))
+world_pop</code></pre>
+<pre><code>## # A tibble: 46,883 x 4
+##    Entity      Code  Year  Population
+##    &lt;fct&gt;       &lt;fct&gt; &lt;fct&gt;      &lt;dbl&gt;
+##  1 Afghanistan AFG   1800     3280000
+##  2 Afghanistan AFG   1801     3280000
+##  3 Afghanistan AFG   1802     3280000
+##  4 Afghanistan AFG   1803     3280000
+##  5 Afghanistan AFG   1804     3280000
+##  6 Afghanistan AFG   1805     3280000
+##  7 Afghanistan AFG   1806     3280000
+##  8 Afghanistan AFG   1807     3280000
+##  9 Afghanistan AFG   1808     3280000
+## 10 Afghanistan AFG   1809     3280000
+## # ... with 46,873 more rows</code></pre>
+<ul>
+<li>Economic data
 <ul>
 <li>GDP</li>
 <li>Stock Market</li>
+<li>Tech market share</li>
 <li>etc.</li>
 </ul></li>
-<li><p>Health Data</p>
+<li>Health Data
 <ul>
 <li>Physical Activity</li>
 <li>Obesity</li>
