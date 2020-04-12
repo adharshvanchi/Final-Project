@@ -11,7 +11,7 @@ Problem Statement: Is the Internet and the ways to access it detrimental to huma
 
 ```{r setup}
 knitr::opts_chunk$set(eval = T)
-
+options(scipen = 999)
 suppressPackageStartupMessages(library(tidyverse))
 
 ```
@@ -19,33 +19,54 @@ Data:
 
 - Internet users/availability
 ```{r net_user_load}
-net_users <- as.tibble(read.csv(file = "Data/number-of-internet-users-by-country.csv"))
+net_users_raw <- as.tibble(read.csv(file = "Data/number-of-internet-users-by-country.csv"))
+net_users <- net_users_raw %>% filter(Entity == "World") %>% select(Entity,Year,Num_Net_Users = Number.of.internet.users..users.) %>% arrange(Year)
+net_users
 ```
 
 
 - Smartphone users
 ```{r smartphone_load}
-mobile_use <- as.tibble(read.csv(file = "Data/mobile-cellular-subscriptions-per-100-people.csv"))
+mobile_use_raw <- as.tibble(read.csv(file = "Data/mobile-cellular-subscriptions-per-100-people.csv"))
+mobile_use <- mobile_use_raw %>% filter(Entity == "World",Year > 1989) %>% select(Entity, Year, Mobile_Per_100 = Mobile.cellular.subscriptions..per.100.people...per.100.people.) %>% arrange(Year)
+mobile_use
 ```
 
 - Digital media usage
 ```{r social_media_load}
-DM_use <- as.tibble(read.csv(file = "Data/daily-hours-spent-with-digital-media-per-adult-user.csv"))
+US_DM_use_raw <- as.tibble(read.csv(file = "Data/daily-hours-spent-with-digital-media-per-adult-user.csv"))
+US_DM_use <- US_DM_use_raw 
+US_DM_use
 ```
 
 - % of pop internet usage
 ```{r net_percent_load}
-net_per <- as.tibble(read.csv(file = "Data/share-of-individuals-using-the-internet.csv"))
+net_per_raw <- as.tibble(read.csv(file = "Data/share-of-individuals-using-the-internet.csv"))
+net_per <- net_per_raw %>% filter(Entity == "World") %>% select(Entity,Year,Percent_Internet =Individuals.using.the.Internet....of.population.....of.population.) %>% arrange(Year)
+net_per
 
 ```
+
+- Users by Social Media Platform
+```{r sm_user_load}
+sm_user_raw <- as.tibble(read.csv(file = "Data/users-by-social-media-platform.csv"))
+sm_user <- sm_user_raw 
+# Find the cumulative amount of users per year
+sm_user
+
+```
+
 
 
 
 
 - Global Population Data
 ```{r world_pop_load}
-world_pop <- as.tibble(read.csv(file = "Data/population.csv"))
+
+world_pop_raw <- as.tibble(read.csv(file = "Data/population.csv"))
+world_pop <- world_pop_raw %>% filter(Entity == "World") %>% select(Entity,Year,Pop = Population) %>% slice(122:151)
 world_pop
+
 
 ```
 
@@ -58,7 +79,8 @@ world_pop
 
 - Health Data
   - Physical Activity
-  - Obesity 
+  - Diabetes25
+  - Obesity
   - Heart Issues
   
 0. Introduction
@@ -66,8 +88,14 @@ world_pop
 1. Gather and Display Tech Data
   
   - Import data from .csv files
+```{r}
+
+
+```
+
   - Clean up the Data and filter out unused data
   - Display Graphs
+    - Create a graph that plots all the tech data and population data
   - Show Data
   - Make data % of world pop and apply a regression to project the future
 
