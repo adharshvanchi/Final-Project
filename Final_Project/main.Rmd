@@ -15,8 +15,47 @@ knitr::opts_chunk$set(eval = T)
 suppressPackageStartupMessages(library(tidyverse))
 
 ```
+Data:
 
-Gather and Display Tech Data
+- Internet users/availability
+- Smartphone users
+- Tech market share
+- Economic data
+  - GDP
+  - Stock Market
+  - etc.
+- Health Data
+  - Physical Activity
+  - Obesity
+  - Heart Issues
+  
+0. Introduction
 
-- Display Graphs
-- Show Data
+1. Gather and Display Tech Data
+
+  - Display Graphs
+  - Show Data
+  - Make data % of world pop and apply a regression to project the future
+
+2. Relating Tech Data
+
+  - Age group internet usage over time
+  - Help establish the different types of users
+  - Provide a reason to care about the Data
+
+3. Relating Health Data
+
+  - Provide health data for each age group introduced in Part 2
+  - Correlate health stats with technology usage per age group
+
+4. Relating Economic Data
+  - Provide correlation of technological advancement to Economic prosperity
+  - Compare market share data over time
+
+5. Low-internet vs high-internet Country comparison
+  - Pick 2 countries with similar populations in similar regions of the world
+  - Compare quality of life
+  - Compare economic status over time
+  - Make conclusions based on this information
+  
+6. Summary/Conclusion
