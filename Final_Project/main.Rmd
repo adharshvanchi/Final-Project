@@ -18,21 +18,48 @@ suppressPackageStartupMessages(library(tidyverse))
 Data:
 
 - Internet users/availability
+```{r net_user_load}
+net_users <- read.csv(file = "Data/number-of-internet-users-by-country.csv")
+```
+
+
 - Smartphone users
+```{r smartphone_load}
+mobile_use <- read.csv(file = "Data/mobile-cellular-subscriptions-per-100-people.csv")
+```
+
+- Digital media usage
+```{r social_media_load}
+DM_use <- read.csv(file = "Data/daily-hours-spent-with-digital-media-per-adult-user.csv")
+```
+
+- % of pop internet usage
+```{r net_percent_load}
+net_per <- read.csv(file = "Data/share-of-individuals-using-the-internet.csv")
+
+```
+
+
 - Tech market share
+
+- Global Population Data
+
 - Economic data
   - GDP
   - Stock Market
   - etc.
+
 - Health Data
   - Physical Activity
-  - Obesity
+  - Obesity 
   - Heart Issues
   
 0. Introduction
 
 1. Gather and Display Tech Data
-
+  
+  - Import data from .csv files
+  - Clean up the Data and filter out unused data
   - Display Graphs
   - Show Data
   - Make data % of world pop and apply a regression to project the future
@@ -58,4 +85,17 @@ Data:
   - Compare economic status over time
   - Make conclusions based on this information
   
+6. Projection of Technology
+
+  - VR/AR projections
+  - 5G projections 
+  
 6. Summary/Conclusion
+
+
+
+
+
+
+
+

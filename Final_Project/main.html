@@ -373,10 +373,46 @@ summary {
 <pre class="r"><code>knitr::opts_chunk$set(eval = T)
 
 suppressPackageStartupMessages(library(tidyverse))</code></pre>
-<ol style="list-style-type: decimal">
-<li>Gather and Display Tech Data</li>
+<p>Data:</p>
+<ul>
+<li>Internet users/availability</li>
+</ul>
+<pre class="r"><code>net_users &lt;- read.csv(file = &quot;Data/number-of-internet-users-by-country.csv&quot;)</code></pre>
+<ul>
+<li>Smartphone users</li>
+</ul>
+<pre class="r"><code>mobile_use &lt;- read.csv(file = &quot;Data/mobile-cellular-subscriptions-per-100-people.csv&quot;)</code></pre>
+<ul>
+<li>Digital media usage</li>
+</ul>
+<pre class="r"><code>DM_use &lt;- read.csv(file = &quot;Data/daily-hours-spent-with-digital-media-per-adult-user.csv&quot;)</code></pre>
+<ul>
+<li>% of pop internet usage</li>
+</ul>
+<pre class="r"><code>net_per &lt;- read.csv(file = &quot;Data/share-of-individuals-using-the-internet.csv&quot;)</code></pre>
+<ul>
+<li><p>Tech market share</p></li>
+<li><p>Global Population Data</p></li>
+<li><p>Economic data</p>
+<ul>
+<li>GDP</li>
+<li>Stock Market</li>
+<li>etc.</li>
+</ul></li>
+<li><p>Health Data</p>
+<ul>
+<li>Physical Activity</li>
+<li>Obesity</li>
+<li>Heart Issues</li>
+</ul></li>
+</ul>
+<ol start="0" style="list-style-type: decimal">
+<li><p>Introduction</p></li>
+<li><p>Gather and Display Tech Data</p></li>
 </ol>
 <ul>
+<li>Import data from .csv files</li>
+<li>Clean up the Data and filter out unused data</li>
 <li>Display Graphs</li>
 <li>Show Data</li>
 <li>Make data % of world pop and apply a regression to project the future</li>
@@ -394,7 +430,34 @@ suppressPackageStartupMessages(library(tidyverse))</code></pre>
 </ol>
 <ul>
 <li>Provide health data for each age group introduced in Part 2</li>
+<li>Correlate health stats with technology usage per age group</li>
 </ul>
+<ol start="4" style="list-style-type: decimal">
+<li>Relating Economic Data</li>
+</ol>
+<ul>
+<li>Provide correlation of technological advancement to Economic prosperity</li>
+<li>Compare market share data over time</li>
+</ul>
+<ol start="5" style="list-style-type: decimal">
+<li>Low-internet vs high-internet Country comparison</li>
+</ol>
+<ul>
+<li>Pick 2 countries with similar populations in similar regions of the world</li>
+<li>Compare quality of life</li>
+<li>Compare economic status over time</li>
+<li>Make conclusions based on this information</li>
+</ul>
+<ol start="6" style="list-style-type: decimal">
+<li>Projection of Technology</li>
+</ol>
+<ul>
+<li>VR/AR projections</li>
+<li>5G projections</li>
+</ul>
+<ol start="6" style="list-style-type: decimal">
+<li>Summary/Conclusion</li>
+</ol>
 
 
 
