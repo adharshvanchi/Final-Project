@@ -19,34 +19,41 @@ Data:
 
 - Internet users/availability
 ```{r net_user_load}
-net_users <- read.csv(file = "Data/number-of-internet-users-by-country.csv")
+net_users <- as.tibble(read.csv(file = "Data/number-of-internet-users-by-country.csv"))
 ```
 
 
 - Smartphone users
 ```{r smartphone_load}
-mobile_use <- read.csv(file = "Data/mobile-cellular-subscriptions-per-100-people.csv")
+mobile_use <- as.tibble(read.csv(file = "Data/mobile-cellular-subscriptions-per-100-people.csv"))
 ```
 
 - Digital media usage
 ```{r social_media_load}
-DM_use <- read.csv(file = "Data/daily-hours-spent-with-digital-media-per-adult-user.csv")
+DM_use <- as.tibble(read.csv(file = "Data/daily-hours-spent-with-digital-media-per-adult-user.csv"))
 ```
 
 - % of pop internet usage
 ```{r net_percent_load}
-net_per <- read.csv(file = "Data/share-of-individuals-using-the-internet.csv")
+net_per <- as.tibble(read.csv(file = "Data/share-of-individuals-using-the-internet.csv"))
 
 ```
 
 
-- Tech market share
+
 
 - Global Population Data
+```{r world_pop_load}
+world_pop <- as.tibble(read.csv(file = "Data/population.csv"))
+world_pop
+
+```
+
 
 - Economic data
   - GDP
   - Stock Market
+  - Tech market share
   - etc.
 
 - Health Data
