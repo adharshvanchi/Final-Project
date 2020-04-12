@@ -50,7 +50,7 @@ net_per
 - Users by Social Media Platform
 ```{r sm_user_load}
 sm_user_raw <- as.tibble(read.csv(file = "Data/users-by-social-media-platform.csv"))
-sm_user <- sm_user_raw 
+sm_user <- sm_user_raw %>% group_by(Year) %>% summarise(sm_sum = sum(Monthly.active.users..Statista.and.TNW..2019....MAU.))
 # Find the cumulative amount of users per year
 sm_user
 
@@ -89,13 +89,36 @@ world_pop
   
   - Import data from .csv files
 ```{r}
+tech_data <- # join together 
+```
 
+
+  - Clean up the Data and filter out unused data
+
+```{r net_users_graph}
+ggplot(net_users)+
+  geom_point(mapping = aes(x = Year,y = Num_Net_Users))
+```
+
+```{r smartphone_user_graph}
+ggplot(mobile_use)+
+  geom_point(mapping = aes(x = Year, y = Mobile_Per_100))
+```
+```{r internet_per_graph}
+ggplot(net_per)+
+  geom_point(mapping = aes(x = Year,y = Percent_Internet))
 
 ```
 
-  - Clean up the Data and filter out unused data
+
   - Display Graphs
-    - Create a graph that plots all the tech data and population data
+```{r}
+ggplot(sm_user)+
+  geom_point(mapping = aes(x = Year, y = sm_sum))
+
+```
+
+  - Create a graph that plots all the tech data and population data
   - Show Data
   - Make data % of world pop and apply a regression to project the future
 
