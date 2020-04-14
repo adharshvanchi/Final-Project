@@ -12,7 +12,13 @@ Problem Statement: Is the Internet and the ways to access it detrimental to huma
 # The Plan
 
 ## Introduction
-- Talk about 
+- Provide Engaging and Informative intro to Problem Statement
+
+  The Internet has been a juggernaut of social and cultural change, bringing people together and providing forums and spaces to voice their opinions, display their creative efforts, and even conduct business. However, many of us with access to it take the internet and its effects for granted. Could internet access be a path to more educated, economically powerful country? The effects of internet access and how the access inequality affects countries as a whole has not been extensively studied, and may provide insight into why internet infrastructure is a necessary investment for a 21st century sovereignty. By collecting data on the numbers of non-cellular internet users, % of population that are mobile internet users, % of population who are internet users, and comparing it to their population, GDP, GDP per Capita, and national average learning outcomes, we will attempt to shed more light on the potential of internet access as a key indicator for future success. Using the key internet access indicators, we are able to contrast each country's economic and educational data with their internet access data, providing clear patterns by plotting the data.
+- Explain why this problem, data and methods used
+
+- Discuss your approach and analysis and wy it addresses issue
+- How analysis helps reader
 
 Gather and tidy up data
 - Create df for each country and world data
@@ -74,10 +80,31 @@ Summary
 ```{r setup}
 knitr::opts_chunk$set(eval = T)
 options(scipen = 999)
+# Explain why this package is loaded
 suppressPackageStartupMessages(library(tidyverse))
 
 ```
 # Data:
+Num_Users : https://ourworldindata.org/internet#citation
+Smartphone_Users: https://ourworldindata.org/internet#citation
+Digital Media Usage: https://ourworldindata.org/internet#citation
+% internet usage: https://ourworldindata.org/internet#citation
+Social Media: https://ourworldindata.org/rise-of-social-media
+Population: https://datahub.io/world-bank/sp.pop.totl
+GDP: https://datahub.io/core/gdp
+National Average Learning Outcome: https://ourworldindata.org/global-education
+
+## Data Prep:
+
+- Source is cited and Hyperlinked
+- Source Data is thoroughly explained
+  - Who collected it
+  - Why it was Collected
+  - When it was collected
+  - Is there anything wrong or weird about this Data?
+- Data Import is logical and explained
+- Show final data set(s) in the most condensed form
+- Provide a summary for variables of interest
 ## Tech Data
 
 - Internet users/availability
@@ -88,7 +115,6 @@ net_users_wld
 net_users_raw %>% filter(Entity == "South Korea")
 
 ```
-
 
 - Smartphone users
 ```{r smartphone_load}
@@ -123,19 +149,38 @@ sm_user
 pop_raw <- as.tibble(read.csv(file = "Data/population.csv")) %>% rename(pop = Value) %>% filter(Year > 1989)
 wld_pop <- pop_raw %>% filter(Country.Name == "World")
 #wld_pop
-pop_raw %>% filter(Country.Code == "KOR")
+pop_raw 
+
 
 
 ```
 
-## Economic
+## Economics and Education
 
 - GDP
 ```{r GDP_load}
 GDP <-read.csv(file = "Data/gdp_csv.csv")%>% rename(GDP = Value) %>% filter(Year > 1989)
 GDP_wld<- GDP %>% filter(Country.Name == "World")
 GDP %>% filter(Country.Code == "RUS")
+
 ```
+- Average Learning Outcome(ALO)
+```{r ALO_load}
+ALO_tbl <- as.tbl(read.csv(file = "Data/average-harmonized-learning-outcome-scores.csv")) %>% filter(Code != "") %>% rename(ALO = Average.harmonised.learning.outcome.score..Altinok..Angrist..and.Patrinos..2018......score..)
+
+```
+
+
+
+## Data Analysis:
+- Uncover new info that isn't apparent
+- Display findings in tables or plots
+- Use Graphs to illustrate your primary point
+- Use tables to compare and highlight important differences
+- Analysis should be thorough and concise
+- Easy to Follow
+
+
 
 # World Data
 
@@ -144,12 +189,11 @@ GDP %>% filter(Country.Code == "RUS")
 
 ```{r wld_data_init}
 wld_data <- full_join(wld_pop,net_users_wld,by = "Year") 
-wld_data
-
 wld_data <- wld_data %>% left_join(mobile_use_wld, by = "Year")
 wld_data <- wld_data %>% left_join(net_per_wld, by = "Year")
-wld_data <- wld_data %>% left_join(GDP_wld, by = "Year")  %>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
-wld_data 
+wld_data <- wld_data %>% left_join(GDP_wld, by = "Year") %>% left_join() 
+%>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+wld_data %>% head()
 
 ```
 # Plotting
@@ -208,13 +252,13 @@ gdp_%
 
 
 ```{r US-data}
-US_data <- left_join(pop_raw %>% filter(Country.Name == "United States"),net_users_raw %>% filter(Entity == "United States"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Entity == "United States"), by = "Year") %>% left_join(net_per_raw %>% filter(Entity == "United States")) %>% left_join(GDP) %>% filter(Country.Name == "United States") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
+US_data <- left_join(pop_raw %>% filter(Country.Name == "United States"),net_users_raw %>% filter(Entity == "United States"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Entity == "United States"), by = "Year") %>% left_join(net_per_raw %>% filter(Entity == "United States")) %>% left_join(GDP) %>% filter(Country.Name == "United States")%>% left_join(ALO_tbl) %>% filter(Entity == "United States") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
 US_data
 ```
 
 ```{r RU_data}
 
-RU_data <- left_join(pop_raw %>% filter(Country.Name == "Russian Federation"),net_users_raw %>% filter(Entity == "Russia"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Entity == "Russia"), by = "Year") %>% left_join(net_per_raw %>% filter(Entity == "Russia")) %>% left_join(GDP) %>% filter(Country.Name == "Russian Federation") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
+RU_data <- left_join(pop_raw %>% filter(Country.Code == "RUS"),net_users_raw %>% filter(Code == "RUS"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "RUS"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "RUS")) %>% left_join(GDP) %>% filter(Country.Code == "RUS") %>% left_join(ALO_tbl) %>% filter(Code == "RUS") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
 RU_data
 
 ```
@@ -225,6 +269,7 @@ RU_data
 WUR_data <- bind_rows(wld_data,US_data,RU_data) %>% mutate(GDP_Capita = GDP/pop)
 WUR_data
 ```
+
 ```{r pop_1}
 ggplot(WUR_data %>% filter(Entity != "World"))+
   geom_col(aes(Year,pop,color = Entity), position = "dodge")
@@ -241,16 +286,22 @@ ggplot(WUR_data %>% filter(Entity != "World"))+
   geom_line(aes(Year,GDP_Capita, color = Entity))+
 
 ```
+```{r}
+ggplot(WUR_data %>% filter(Entity != "World"))+
+  geom_point(aes(Year,ALO, color = Entity))
+  
+```
+
 
 
 ```{r SK_data}
-SK_data <- left_join(pop_raw %>% filter(Country.Code == "KOR"),net_users_raw %>% filter(Code == "KOR"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "KOR"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "KOR")) %>% left_join(GDP) %>% filter(Country.Code == "KOR") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
+SK_data <- left_join(pop_raw %>% filter(Country.Code == "KOR"),net_users_raw %>% filter(Code == "KOR"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "KOR"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "KOR")) %>% left_join(GDP) %>% filter(Country.Code == "KOR")%>% left_join(ALO_tbl) %>% filter(Code == "KOR") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
 SK_data
 
 
 ```
 ```{r MM_data}
-MM_data <- left_join(pop_raw %>% filter(Country.Code == "MMR"),net_users_raw %>% filter(Code == "MMR"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "MMR"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "MMR")) %>% left_join(GDP) %>% filter(Country.Code == "MMR") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) %>% filter(Year >=1999)
+MM_data <- left_join(pop_raw %>% filter(Country.Code == "MMR"),net_users_raw %>% filter(Code == "MMR"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "MMR"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "MMR")) %>% left_join(GDP) %>% filter(Country.Code == "MMR") %>% left_join(ALO_tbl) %>% filter(Code == "MMR") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) %>% filter(Year >=1999)
 MM_data
 
 ```
@@ -260,6 +311,7 @@ MM_data
 WKM_data <- bind_rows(wld_data,SK_data,MM_data) %>% mutate(GDP_Capita = GDP/pop)
 WKM_data
 ```
+
 ```{r pop_2}
 ggplot(WKM_data %>% filter(Entity != "World"))+
   geom_line(aes(Year,pop,color = Entity))
@@ -276,15 +328,20 @@ ggplot(WKM_data %>% filter(Entity != "World"))+
   geom_point(aes(Year,GDP_Capita, color = Entity))
 
 ```
+```{r}
+ggplot(WKM_data %>% filter(Entity == "South Korea"))+
+  geom_point(aes(Year,ALO, color = Entity))
+  
+```
 
 
 ```{r CA_data}
-CA_data <- left_join(pop_raw %>% filter(Country.Code == "CAN"),net_users_raw %>% filter(Code == "CAN"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "CAN"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "CAN")) %>% left_join(GDP) %>% filter(Country.Code == "CAN") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+CA_data <- left_join(pop_raw %>% filter(Country.Code == "CAN"),net_users_raw %>% filter(Code == "CAN"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "CAN"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "CAN")) %>% left_join(GDP) %>% filter(Country.Code == "CAN")%>% left_join(ALO_tbl) %>% filter(Code == "CAN") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
 CA_data
 
 ```
 ```{r TL_data}
-TL_data <- left_join(pop_raw %>% filter(Country.Code == "THA"),net_users_raw %>% filter(Code == "THA"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "THA"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "THA")) %>% left_join(GDP) %>% filter(Country.Code == "THA") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+TL_data <- left_join(pop_raw %>% filter(Country.Code == "THA"),net_users_raw %>% filter(Code == "THA"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "THA"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "THA")) %>% left_join(GDP) %>% filter(Country.Code == "THA") %>% left_join(ALO_tbl) %>% filter(Code == "THA")%>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
 TL_data
 
 ```
@@ -299,12 +356,13 @@ ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_col(aes(Year,pop,color = Entity))
 ```
 ```{r Internet_2}
+ggplot(WCT_data %>% filter(Entity != "World"))+
+  geom_line(aes(Year,Num_Net_Users, color = Entity))
 ggplot(WCT_data)+
   geom_line(aes(Year,Percent_Internet, color = Entity))
 ggplot(WCT_data)+
   geom_line(aes(Year,Mobile_Per_100, color = Entity))
-ggplot(WCT_data %>% filter(Entity != "World"))+
-  geom_line(aes(Year,Num_Net_Users, color = Entity))
+
 
 ```
 ```{r GDP_2}
@@ -312,28 +370,21 @@ ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_point(aes(Year,GDP_Capita, color = Entity))
 
 ```
+```{r}
+ggplot(WCT_data %>% filter(Entity != "World"))+
+  geom_point(aes(Year,ALO, color = Entity))
+```
 
-  - Clean up the Data and filter out unused data
-
-
-  - Display Graphs
-
-  - Create a graph that plots all the tech data and population data
-  - Show Data
-  - Make data % of world pop and apply a regression to project the future
 
 
   
-6. Projection of Technology
 
-  - VR/AR projections
-  - 5G projections 
-  
-6. Summary/Conclusion
-
-
-
-
+## Summary/Conclusion
+- Problem Statement
+- How it was addressed
+- Insight given by analysis
+- Implications of findings
+- Discuss limitations of findings
 
 
 
