@@ -14,23 +14,13 @@ Problem Statement: Is the Internet and the ways to access it detrimental to huma
 ## Introduction
 - Provide Engaging and Informative intro to Problem Statement
 
-  The Internet has been a juggernaut of social and cultural change, bringing people together and providing forums and spaces to voice their opinions, display their creative efforts, and even conduct business. However, many of us with access to it take the internet and its effects for granted. Could internet access be a path to more educated, economically powerful country? The effects of internet access and how the access inequality affects countries as a whole has not been extensively studied, and may provide insight into why internet infrastructure is a necessary investment for a 21st century sovereignty. By collecting data on the numbers of non-cellular internet users, % of population that are mobile internet users, % of population who are internet users, and comparing it to their population, GDP, GDP per Capita, and national average learning outcomes, we will attempt to shed more light on the potential of internet access as a key indicator for future success. Using the key internet access indicators, we are able to contrast each country's economic and educational data with their internet access data, providing clear patterns by plotting the data.
 - Explain why this problem, data and methods used
 
 - Discuss your approach and analysis and wy it addresses issue
+
 - How analysis helps reader
 
-Gather and tidy up data
-- Create df for each country and world data
-show world data
-
-select a few countries and show internet availability, mobile phone users, and trnds in economy(GDP, tech market share)
-compare countries based on productivity, economic output, and median income against internet availability
-Make conclusions on how internet has impacted each country based on these metrics
-
-Use graphs to show relationships
-
-Then use tables to compare and highlight values
+  The Internet has been a juggernaut of social and cultural change, bringing people together and providing forums and spaces to voice their opinions, display their creative efforts, and even conduct business. However, many of us with access to it take the internet and its effects for granted. Could internet access be a path to more educated, economically powerful country? The effects of internet access and how the access inequality affects countries as a whole has not been extensively studied, and may provide insight into why internet infrastructure is a necessary investment for a 21st century sovereignty. By collecting data on the numbers of non-cellular internet users, % of population that are mobile internet users, % of population who are internet users, and comparing it to their population, GDP, GDP per Capita, and national average learning outcomes, we will attempt to shed more light on the potential of internet access as a key indicator for future success. Using the key internet access indicators, we are able to contrast each country's economic and educational data with their internet access data, providing clear patterns by plotting the data.
 
 
 -World
@@ -50,10 +40,6 @@ Then use tables to compare and highlight values
   - GDP
   - GDP Per Capita
   - Median Income
-  
-Discuss each on 1990,1995,2000,2010,2015 against wld_data
-  
-  
 
 Comparison: Cold War Rivals
 - USA
@@ -184,18 +170,18 @@ ALO_tbl <- as.tbl(read.csv(file = "Data/average-harmonized-learning-outcome-scor
 
 # World Data
 
-## Create DF with World Data(wld_data
+## Create DF with World Data(wld_data)
 
+Using the data we just gathered and discussed, we must first show the trends of the data as a whole, using World data to determine whether the countries we explore further are above or below the world average.
+First we consolidate the disparate dataframes into one `wld_data` Dataframe. This allows us to manipulate and graph the data.
 
 ```{r wld_data_init}
-wld_data <- full_join(wld_pop,net_users_wld,by = "Year") 
-wld_data <- wld_data %>% left_join(mobile_use_wld, by = "Year")
-wld_data <- wld_data %>% left_join(net_per_wld, by = "Year")
-wld_data <- wld_data %>% left_join(GDP_wld, by = "Year") %>% left_join() 
-%>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+wld_data <- full_join(wld_pop,net_users_wld,by = "Year") %>% left_join(mobile_use_wld, by = "Year") %>% left_join(net_per_wld, by = "Year") %>% left_join(GDP_wld, by = "Year") %>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
 wld_data %>% head()
 
 ```
+
+First, lets graph the world population, number of mobile subscriptions, and the number of broadband/wi-fi internet users. This graph clearly illustrates how pervasive technology is in our modern lives. 
 # Plotting
 ## Population, Internet users, mobile users
 
@@ -283,7 +269,7 @@ ggplot(WUR_data)+
 ```
 ```{r GDP_1}
 ggplot(WUR_data %>% filter(Entity != "World"))+
-  geom_line(aes(Year,GDP_Capita, color = Entity))+
+  geom_line(aes(Year,GDP_Capita, color = Entity))
 
 ```
 ```{r}
@@ -351,11 +337,11 @@ TL_data
 WCT_data <- bind_rows(wld_data,CA_data,TL_data) %>% mutate(GDP_Capita = GDP/pop)
 WCT_data
 ```
-```{r pop_2}
+```{r pop_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_col(aes(Year,pop,color = Entity))
 ```
-```{r Internet_2}
+```{r Internet_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_line(aes(Year,Num_Net_Users, color = Entity))
 ggplot(WCT_data)+
@@ -365,12 +351,12 @@ ggplot(WCT_data)+
 
 
 ```
-```{r GDP_2}
+```{r GDP_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_point(aes(Year,GDP_Capita, color = Entity))
 
 ```
-```{r}
+```{r ALO_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_point(aes(Year,ALO, color = Entity))
 ```
