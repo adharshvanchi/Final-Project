@@ -176,7 +176,7 @@ Using the data we just gathered and discussed, we must first show the trends of 
 First we consolidate the disparate dataframes into one `wld_data` Dataframe. This allows us to manipulate and graph the data.
 
 ```{r wld_data_init}
-wld_data <- full_join(wld_pop,net_users_wld,by = "Year") %>% left_join(mobile_use_wld, by = "Year") %>% left_join(net_per_wld, by = "Year") %>% left_join(GDP_wld, by = "Year") %>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+wld_data <- full_join(wld_pop,net_users_wld,by = "Year") %>% left_join(mobile_use_wld, by = "Year") %>% left_join(net_per_wld, by = "Year") %>% left_join(GDP_wld, by = "Year") %>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) %>% mutate(GDP_Capita = GDP/pop)
 wld_data %>% head()
 
 ```
@@ -195,13 +195,15 @@ ggplot(wld_data)+
 # Make it Pretty
   
 ```
-
+Now we graph the GDP per Capita to provide a mean baseline to judge our selected countries against to see if they above or below the World average.
 ## GDP
 ```{r}
 ggplot(wld_data)+
-  geom_line(aes(Year,GDP))+
-  labs(title = "World GDP over time", x = "Time(Years)", y = "Nominal GDP (In current USD)")
+  geom_line(aes(Year,GDP_Capita))+
+  labs(title = "World GDP over time", x = "Time(Years)", y = "Nominal GDP per Capita (In current USD)")
 ```
+
+Then we analyse the world Mobile User and Internet users by percent(%). This is again just a baseline to compare the our selected countries.
 
 ## Internet and Mobile Users (%)
 
@@ -212,6 +214,7 @@ ggplot(NULL, aes(Year, val)) +
   geom_col(aes(fill = "Monthly Mobile Users"), data = mob_100, alpha = 0.5,position = "dodge") +  geom_col(aes(fill = "Percent of Population with Internet"), data = per_int, alpha = 0.5,position = "dodge")+
   scale_y_continuous(limits = c(0,100))
 ```
+With just Social Media being a major contributor to the rapid assimilation of the internet, it is paramount to show how just over barely a decade, industry titans like Facebook and Youtube have over 1.5 billion monthly users.
 ```{r}
 ggplot(sm_user)+
   geom_line(aes(Year,Monthly_Users))+
@@ -234,9 +237,10 @@ net_%
 gdp_%
 
 
+First, lets compare the Cold War Rivals, The United States vs Russia.
 
 
-
+First we create US and RU dataframes to combine and create a World-US-Russia dataframe to make comparisons
 ```{r US-data}
 US_data <- left_join(pop_raw %>% filter(Country.Name == "United States"),net_users_raw %>% filter(Entity == "United States"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Entity == "United States"), by = "Year") %>% left_join(net_per_raw %>% filter(Entity == "United States")) %>% left_join(GDP) %>% filter(Country.Name == "United States")%>% left_join(ALO_tbl) %>% filter(Entity == "United States") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
 US_data
@@ -256,10 +260,14 @@ WUR_data <- bind_rows(wld_data,US_data,RU_data) %>% mutate(GDP_Capita = GDP/pop)
 WUR_data
 ```
 
+First we compare the Populations of Russia and US
 ```{r pop_1}
 ggplot(WUR_data %>% filter(Entity != "World"))+
   geom_col(aes(Year,pop,color = Entity), position = "dodge")
 ```
+Notice that since the end of the Cold War in 1991, The population has generally trended lower for Russia and drastically higher for the US. 
+
+Now the internet access graphs for both countries
 ```{r Internet_1}
 ggplot(WUR_data)+
   geom_line(aes(Year,Percent_Internet, color = Entity))
@@ -267,16 +275,24 @@ ggplot(WUR_data)+
   geom_line(aes(Year,Mobile_Per_100, color = Entity))
 
 ```
+Notice that while the US has had 70% or above since 2005, while Russia only broke 70% a full decade later. Their victory of the Cold War allowed the US to spend more resources implementing infrastructural upgrades while Russia had to take care of more essential needs. But Russia has more mobile users, which seems to be due to the inherent lower cost of cellular network installation and operation, for both the providers and consumers.
+
+GDP per Capita
+
 ```{r GDP_1}
-ggplot(WUR_data %>% filter(Entity != "World"))+
+ggplot(WUR_data)+ #%>% filter(Entity != "World"))+
   geom_line(aes(Year,GDP_Capita, color = Entity))
 
 ```
+As arguably the largest economic force ever in history, it is no surprise to see the United States far outpacing its former rival. And their private and government actions to further internet access has only increased their output. Russia is no slouch, however, pulling its GDP per Capita above the World Average after the 2008 financial crisis.
 ```{r}
 ggplot(WUR_data %>% filter(Entity != "World"))+
-  geom_point(aes(Year,ALO, color = Entity))
+  geom_col(aes(Year,ALO, color = Entity), position = "dodge")
   
 ```
+While Russia technically scores higher, the missing data is the number of students this study takes into account and how small the difference is despite the massive difference in population. Despite having similar ALO scores, the USA far outpaces Russia in GDP, and overall internet coverage.
+
+Moving onto South Korea and Myanmar, both these countries are located in Asia and have similar populations at the end of the dataset(2016). By comparing them, we can compare more precisely and draw stronger conclusions.
 
 
 
@@ -298,10 +314,14 @@ WKM_data <- bind_rows(wld_data,SK_data,MM_data) %>% mutate(GDP_Capita = GDP/pop)
 WKM_data
 ```
 
+
+First we plot their populations
 ```{r pop_2}
 ggplot(WKM_data %>% filter(Entity != "World"))+
-  geom_line(aes(Year,pop,color = Entity))
+  geom_col(aes(Year,pop,color = Entity),position = "dodge")
 ```
+We can see that both these countries have had nearly identical population numbers since data is available(Myanmar only has data from 2000 onwards). Now to compare their internet coverage
+
 ```{r Internet_2}
 ggplot(WKM_data)+
   geom_line(aes(Year,Percent_Internet, color = Entity))
@@ -309,17 +329,23 @@ ggplot(WKM_data)+
   geom_line(aes(Year,Mobile_Per_100, color = Entity))
 
 ```
+Myanmar functionally did not have any internet capacity until 2010 at the earliest. Comparing this with South Korea, the numbers increased the most drastically even before the turn of the century, shooting up from 15% in 1997 to nearly 50% in 1999. This early adoption paid dividends compared to Myanmar's measly 25% in 2016. But in terms of mobile user percentages, Myanmar has increased its numbers drastically from 7% in 2012 to nearly 75& in 2016, showing a trend that countries that don't invest in a wired internet system often opt for mobile, as shown by Russia in the previous comparison as well.
+
 ```{r GDP_2}
 ggplot(WKM_data %>% filter(Entity != "World"))+
   geom_point(aes(Year,GDP_Capita, color = Entity))
 
 ```
+Graphing the GDP per Capita, it is easy to see the wealth disparity between these two nations. Similar to their internet infrastructure, Myanmar cannot compare against South Korea, despite the similar populations. 
 ```{r}
-ggplot(WKM_data %>% filter(Entity == "South Korea"))+
-  geom_point(aes(Year,ALO, color = Entity))
+ggplot(NULL, aes(Year,ALO))+
+  geom_point(data = US_data, color = "Blue")+
+  geom_point(data = SK_data)
   
 ```
+Myanmar does not have any ALO information, this may be due to the precarious governmental organization there, but South Korea has consistently scored higher than even the United States, so it would suffice it to say South Korea is far more educated than Myanmar based on the previous analysis. This shows that not only does internet access beget wealth, but wealth begets internet access.
 
+Finally, Two countries with similar populations with access to Internet
 
 ```{r CA_data}
 CA_data <- left_join(pop_raw %>% filter(Country.Code == "CAN"),net_users_raw %>% filter(Code == "CAN"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "CAN"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "CAN")) %>% left_join(GDP) %>% filter(Country.Code == "CAN")%>% left_join(ALO_tbl) %>% filter(Code == "CAN") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
