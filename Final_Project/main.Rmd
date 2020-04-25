@@ -21,7 +21,7 @@ Could internet access be a path to more educated, economically powerful country?
 
 - Explain why this problem, data and methods used
 
-- Discuss your approach and analysis and wy it addresses issue
+- Discuss your approach and analysis and why it addresses issue
 
 - How analysis helps reader
 -World
