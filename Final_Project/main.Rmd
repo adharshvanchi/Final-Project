@@ -32,8 +32,6 @@ suppressPackageStartupMessages(library(ggpubr))
 
 ## Citations
 
-***Finish Citation blurbs***
-
 - Internet users/availability
 
  The entity, year and number of internet users was selected to show the data that is
@@ -53,24 +51,35 @@ World in Data, 14 July 2015, ourworldindata.org/internet.
 
 - Percent of population internet usage
 
+The percentage of population that uses the internet data is filtered by entity, year and percent of internet users to show what percentage of Russia’s population is using the internet
+
 Roser, Max, et al. “Internet, how many internet users does each country have/share of population using
 the internet.” Our World in Data, 14 July 2015, ourworldindata.org/internet.
 
 - Users by social media platform
 
+Users by social media data was used to show the number of people using social media platforms. This data was filtered to show the data for the specific social media platforms: Facebook, Instagram, Reddit, YouTube.
+
 Roser, Max, et al. “Internet, The Rise of Social Media/Number of people using social media
 platforms.” Our World in Data, 14 July 2015, ourworldindata.org/internet.
 
 - Population
+
+Global Population by Country was used to compare countries and provide scale for percent values.
+
 Datopian. “Population, Total.” DataHub, datahub.io/world-bank/sp.pop.totl.
 Economics and Education data:
 
 - GDP
 
+The Gross Domestic Product data exemplifies which of the selected countries are above or below the world average, as well as how they compare to each other.
+
 Datopian. “Country, Regional and World GDP (Gross Domestic Product).” DataHub,
 datahub.io/core/gdp.
 
 - National average learning outcome
+
+The average learning outcome (ALO) is used to compare education standards.
 
 Roser, Max, and Esteban Ortiz-Ospina. “Global Education.” Our World in Data, 31 Aug. 2016,
 ourworldindata.org/global-education.
@@ -570,23 +579,5 @@ ggarrange(mob,int, nrow = 2)
 
 
 ## Summary/Conclusion
-***Make bullet points into cohesive paragraph***
 
-- Problem Statement
-  - How does internet access affect a country's economics and education
-
-- How it was addressed
-  - A set of 6 countries are examined based on internet availability, GDP, and ALO
-
-- Insight given by analysis
-  - Showed that poorer countries opt for mobile instead of broadband, Rich countries often invested early into internet access, Countries with similar economic and educational data tend to have similar internet access.
-
-- Implications of findings
-  - While it cant be outright determined if internet access has a positive effect on a country, It would seem that countries that invested early into broadband fare better economically and intellectually.
-
-- Discuss limitations of findings
-  - There is some data missing from a few dataframes,
-We could use more economic and educational indicators(i.e. Eco: CPI, Inflation, Unemployment)(i.e. Edu: Standardized Test Scores, graduation rates) as well as internet *speed* data.
-
-
-
+The main idea of this report is to exemplify how internet access affects countries from an economical and educational standpoint. This idea is addressed by examining 6 countries: France, Germany, South Korea, Myanmar, Canada and Thailand, based on their internet availability, GDP and average learning outcome (ALO). In comparing and analyzing these countries it demonstrated that underdeveloped countries preferred mobile usage over broadband, wealthier countries invested into internet access early on, countries with similar economical and educational trends had similar access to the internet. Although it cannot be outright determined if internet access has a positive influence on a country, it can be implied that countries that invested into broadband early have benefited from it from an economical and educational stance. The data selected was limited to many factors that could have helped in exemplifying whether access to the internet affects countries. Regarding economic data consumer price index (CPI), inflation, and unemployment could have given a better understanding of the country’s economic position. Other data like standardized test scores and gradation rates would have helped in contrast education level.
