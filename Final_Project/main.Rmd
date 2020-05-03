@@ -6,68 +6,19 @@ output:
   html_document: default
 ---
 
-`Restate the Problem Statement`
 Problem Statement: 
 
 Could internet access be a path to more educated, economically powerful country?
 
 “Using the key internet access indicators, we are able to contrast each country’s economic and educational data with their internet access data, providing clear patterns by plotting the data.”
 
-
-# The Plan
-
-## Introduction
-- Provide Engaging and Informative intro to Problem Statement
-
-- Explain why this problem, data and methods used
-
-- Discuss your approach and analysis and why it addresses issue
-
-- How analysis helps reader
--World
-
-  - internet availability % over time
-  - Mobile Phone user % over time
-  - Tech Market Share over time
-  - Social Media membership over time(color by social media app)
-  - Population
-  - Median Income
-  - Digital Media usage over time(USA Data)
-
--Countries (over time)
-  - internet availability (number)
-  - internet availability (%)
-  - Mobile Phone user % 
-  - GDP
-  - GDP Per Capita
-  - Median Income
-
-Comparison: EU Rivals
-- France
-- Germany
-
-
-Comparison: Countries with similar populations
-- South Korea
-- Myanmar
-
-
-Comparison: Countries with similar internet Users
-- Canada
-- Thailand
-
-Comparison: Countries with similar GDP/Capita
-
-Make conclusions based on comparisons
-Summary
-
 # Introduction
-`EDIT`
+
   The Internet has been a juggernaut of social and cultural change, bringing people together and providing forums and spaces to voice their opinions, display their creative efforts, and even conduct business. However, many of us with access to it take the internet and its effects for granted. Could internet access be a path to more educated, economically powerful country? The effects of internet access and how the access inequality affects countries as a whole has not been extensively studied, and may provide insight into why internet infrastructure is a necessary investment for a 21st century government. By collecting data on the numbers of non-cellular internet users, % of population that are mobile internet users, % of population who are internet users, and comparing it to their population, GDP, GDP per Capita, and national average learning outcomes, we will attempt to shed more light on the potential of internet access as a key indicator for future success. Using the key internet access indicators, we are able to contrast each country's economic and educational data with their internet access data, providing clear patterns by plotting the data.
 
 ## Package Setup
 ```{r setup}
-knitr::opts_chunk$set(eval = T)#, warning = F, message = F)
+knitr::opts_chunk$set(eval = T, warning = F, message = F)
 # Change the scipen option to 999 to prevent Scientific Notation
 options(scipen = 999)
 
@@ -81,7 +32,7 @@ suppressPackageStartupMessages(library(ggpubr))
 
 ## Citations
 
-`Finish Citation blurbs`
+***Finish Citation blurbs***
 
 - Internet users/availability
 
@@ -126,19 +77,6 @@ ourworldindata.org/global-education.
 
 
 # Data Prep:
-`Write out details for each data import`
-`Use head() to show each data set`
-`Provide summary of variables`
-
-- Source is cited and Hyperlinked
-- Source Data is thoroughly explained 
-  - Who collected it
-  - Why it was Collected
-  - When it was collected
-  - Is there anything wrong or weird about this Data?
-- Data Import is logical and explained
-- Show final data set(s) in the most condensed form
-- Provide a summary for variables of interest
 
 There are two major categories of data, Internet specific data, and comparison data. All of our internet specific data and the National Average Learning Outcome(ALO) comes from ourworldindata.org, an organization dedicated to "making knowledge on the big problems accessible and understandable." These datasets in particular were sourced from The World Bank database. This data was collected to help explore the short but impactful history of the internet. The research was published in 2020, however the datasets end around 2017.The population and GDP data was gathered and hosted on Datahub by Datopian. It is also from the World Bank. The mobile percent data sometimes exceeds 100%, but this may be due to people having multiple sim cards, a practice common in many countries with subpar information infrastructure.
 
@@ -234,22 +172,7 @@ Variables of Interest:
 - ALO
 
 
-# Data Analysis:
-`Make ALO Graphs increments of 5`
-`Properly format and organize description paragraphs`
-`Properly label Plots`
-
-
-
-
-- Uncover new info that isn't apparent
-- Display findings in tables or plots
-- Use Graphs to illustrate your primary point
-- Use tables to compare and highlight important differences
-- Analysis should be thorough and concise
-- Easy to Follow
-
-
+# Data Analysis
 
 # World Data
 
@@ -379,6 +302,8 @@ ggplot(WFD_data %>% filter(Entity != "World"))+
 
 ### Internet Infrastructure
 
+Both these countries have wildly better internet access than the world average, and it will not be hard to see why. As hubs of tourism, industry, manufacturing, design, and commerce, these countries need to be equipped with robust and powerful internet infrastructure and access to keep up with the other global powerhouses, such as China and the USA.
+
 Now the internet access graphs for both countries
 ```{r Internet_1}
 WFD_PI <- ggplot(WFD_data)+
@@ -398,7 +323,7 @@ WFD_PM <- ggplot(WFD_data)+
   
 ggarrange(WFD_PI,WFD_PM,nrow = 2,ncol = 1)
 ```
-Both these countries have wildly better internet access than the world average, and it will not be hard to see why. As hubs of tourism, industry, manufacturing, design, and commerce, these countries need to be equipped with robust and powerful internet infrastructure and access to keep up with the other global powerhouses, such as China and the USA.
+
 
 
 ### GDP per Capita
@@ -567,7 +492,7 @@ While both countries have similar growth, Thailand simply has a much larger popu
 
 ```{r pop_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
-  geom_col(aes(Year,pop,color = Entity),position = "dodge")
+  geom_col(aes(Year,pop,fill = Entity),position = "dodge")
 ```
 
 ### Internet Infrastructure
@@ -607,7 +532,11 @@ ggplot(WCT_data %>% filter(Entity != "World"))+
 ```
 
   
-## GDP per capita vs mobile % Plot in 1995,2005,2015
+## GDP per capita vs mobile % and internet % Plot in 1995,2005,2015
+
+Finally, to see the impact of mobile and wired internet connection on GDP per Capita over time, we plotted mobile % and internet % by GDP per capita for the years 1995,2005, and 2015.
+
+### Making the Dataframe(s)
 
 ```{r}
 a <- GDP %>% slice(1200:6520)  %>% rename(Entity = Country.Name)
@@ -621,13 +550,17 @@ GDP_mob %>% filter(Entity != "Afghanistan") %>% head()
 
 ```
 
+### Plotting
+
+As the graphs clearly illustrate, for both mobile and wired internet, The GDP per Capita somewhat correlates with mobile %, but correlates strongly with internet %. This is more evidence that internet access, mobile or otherwise, has at least a small effect on the economic wellbeing of countries.
+
 ```{r}
 mob <- ggplot(GDP_mob)+
-  geom_point(aes(GDP_Capita,Mobile_Per_100))+
+  geom_point(aes(Mobile_Per_100,GDP_Capita))+
   facet_wrap(vars(Year))+
   labs(title = "Mobile Subscription % and GDP per Capita", x = "GDP per Capita", y = "Mobile Subscription(%)")
 int <- ggplot(GDP_mob)+
-  geom_point(aes(GDP_Capita,Percent_Internet))+
+  geom_point(aes(Percent_Internet,GDP_Capita))+
   facet_wrap(vars(Year))+
   labs(title = "Internet User % and GDP per Capita", x = "GDP per Capita", y = "Internet Users(%)")
 
@@ -637,7 +570,7 @@ ggarrange(mob,int, nrow = 2)
 
 
 ## Summary/Conclusion
-`Make bullet points into cohesive paragraph`
+***Make bullet points into cohesive paragraph***
 
 - Problem Statement
   - How does internet access affect a country's economics and education
