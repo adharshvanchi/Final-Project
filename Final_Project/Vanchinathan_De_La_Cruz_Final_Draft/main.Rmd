@@ -1,0 +1,583 @@
+---
+title: "Final Project Rough Draft"
+author: "Adharsh Vanchinathan"
+date: "Due 3/13/2020"
+output:
+  html_document: default
+---
+
+Problem Statement: 
+
+Could internet access be a path to more educated, economically powerful country?
+
+“Using the key internet access indicators, we are able to contrast each country’s economic and educational data with their internet access data, providing clear patterns by plotting the data.”
+
+# Introduction
+
+  The Internet has been a juggernaut of social and cultural change, bringing people together and providing forums and spaces to voice their opinions, display their creative efforts, and even conduct business. However, many of us with access to it take the internet and its effects for granted. Could internet access be a path to more educated, economically powerful country? The effects of internet access and how the access inequality affects countries as a whole has not been extensively studied, and may provide insight into why internet infrastructure is a necessary investment for a 21st century government. By collecting data on the numbers of non-cellular internet users, % of population that are mobile internet users, % of population who are internet users, and comparing it to their population, GDP, GDP per Capita, and national average learning outcomes, we will attempt to shed more light on the potential of internet access as a key indicator for future success. Using the key internet access indicators, we are able to contrast each country's economic and educational data with their internet access data, providing clear patterns by plotting the data.
+
+## Package Setup
+```{r setup}
+knitr::opts_chunk$set(eval = T, warning = F, message = F)
+# Change the scipen option to 999 to prevent Scientific Notation
+options(scipen = 999)
+
+# The tidyverse package is loaded in to allow for ease of data manipulation
+# And the start up message is suppressed 
+suppressPackageStartupMessages(library(tidyverse))
+# ggpubr package allows for subplotting (like in matplotlib in Python)
+suppressPackageStartupMessages(library(ggpubr))
+
+```
+
+## Citations
+
+- Internet users/availability
+
+ The entity, year and number of internet users was selected to show the data that is
+important to exemplify the number of internet users.
+
+Roser, Max, et al. “Internet, how many internet users does each country have/number of internet users
+by country.” Our World in Data, 14 July 2015, ourworldindata.org/internet.
+
+- Smartphone users
+
+ The mobile cellular subscriptions per 100 people data was selected by entity, year
+and mobile subscriptions and filtered by the country. This data is important because it shows the amount of
+mobile subscriptions.
+
+Roser, Max, et al. “Internet, Mobile Phone Users/Mobile cellular subscriptions per 100 people.” Our
+World in Data, 14 July 2015, ourworldindata.org/internet.
+
+- Percent of population internet usage
+
+The percentage of population that uses the internet data is filtered by entity, year and percent of internet users to show what percentage of Russia’s population is using the internet
+
+Roser, Max, et al. “Internet, how many internet users does each country have/share of population using
+the internet.” Our World in Data, 14 July 2015, ourworldindata.org/internet.
+
+- Users by social media platform
+
+Users by social media data was used to show the number of people using social media platforms. This data was filtered to show the data for the specific social media platforms: Facebook, Instagram, Reddit, YouTube.
+
+Roser, Max, et al. “Internet, The Rise of Social Media/Number of people using social media
+platforms.” Our World in Data, 14 July 2015, ourworldindata.org/internet.
+
+- Population
+
+Global Population by Country was used to compare countries and provide scale for percent values.
+
+Datopian. “Population, Total.” DataHub, datahub.io/world-bank/sp.pop.totl.
+Economics and Education data:
+
+- GDP
+
+The Gross Domestic Product data exemplifies which of the selected countries are above or below the world average, as well as how they compare to each other.
+
+Datopian. “Country, Regional and World GDP (Gross Domestic Product).” DataHub,
+datahub.io/core/gdp.
+
+- National average learning outcome
+
+The average learning outcome (ALO) is used to compare education standards.
+
+Roser, Max, and Esteban Ortiz-Ospina. “Global Education.” Our World in Data, 31 Aug. 2016,
+ourworldindata.org/global-education.
+
+
+# Data Prep:
+
+There are two major categories of data, Internet specific data, and comparison data. All of our internet specific data and the National Average Learning Outcome(ALO) comes from ourworldindata.org, an organization dedicated to "making knowledge on the big problems accessible and understandable." These datasets in particular were sourced from The World Bank database. This data was collected to help explore the short but impactful history of the internet. The research was published in 2020, however the datasets end around 2017.The population and GDP data was gathered and hosted on Datahub by Datopian. It is also from the World Bank. The mobile percent data sometimes exceeds 100%, but this may be due to people having multiple sim cards, a practice common in many countries with subpar information infrastructure.
+
+## Internet Data
+
+- Internet users/availability
+
+This data shows the number of internet users by country (USA Data shown)
+
+```{r net_user_load}
+net_users_raw <- as_tibble(read.csv(file = "Data/number-of-internet-users-by-country.csv")) %>% rename(Num_Net_Users = Number.of.internet.users..users.)
+net_users_wld <- net_users_raw %>% filter(Entity == "World") %>% select(Entity,Year,Num_Net_Users) %>% arrange(Year)
+net_users_raw %>% filter(Code == "USA") %>% head()
+
+
+```
+
+- Smartphone users
+
+This data shows the number of mobile users per 100 people (USA Data shown)
+
+```{r smartphone_load}
+mobile_use_raw <- as_tibble(read.csv(file = "Data/mobile-cellular-subscriptions-per-100-people.csv")) %>% rename(Mobile_Per_100 = Mobile.cellular.subscriptions..per.100.people...per.100.people.) %>% filter(Year > 1989)
+mobile_use_wld <- mobile_use_raw %>% filter(Entity == "World") %>% select(Entity, Year, Mobile_Per_100 ) %>% arrange(Year)
+mobile_use_raw %>% filter(Code == "USA") %>% head()
+
+```
+
+- % of pop internet usage
+
+This data shows the share of individuals using the internet (USA Data Shown)
+
+```{r net_percent_load}
+net_per_raw <- as.tibble(read.csv(file = "Data/share-of-individuals-using-the-internet.csv")) %>% rename(Percent_Internet =Individuals.using.the.Internet....of.population.....of.population.)
+net_per_wld <- net_per_raw %>% filter(Entity == "World") %>% select(Entity,Year,Percent_Internet) %>% arrange(Year)
+net_per_raw %>% filter(Code == "USA") %>% head()
+
+```
+
+- Users by Social Media Platform
+
+This data shows the user populations of various social media platforms
+
+```{r sm_user_load}
+sm_user_raw <- as.tibble(read.csv(file = "Data/users-by-social-media-platform.csv"))
+sm_user <- sm_user_raw %>% rename(Monthly_Users = Monthly.active.users..Statista.and.TNW..2019....MAU.) %>% filter(Entity == "Facebook"| Entity == "Instagram"|Entity == "Reddit"|Entity == "YouTube")
+sm_user
+```
+
+## Population Data
+
+This data shows population by country (USA Data)
+
+```{r world_pop_load}
+pop_raw <- as.tibble(read.csv(file = "Data/population.csv")) %>% rename(pop = Value) %>% filter(Year > 1989)
+wld_pop <- pop_raw %>% filter(Country.Name == "World")
+pop_raw %>% filter(Country.Code == "USA") %>% head() 
+
+
+
+```
+
+## Economics and Education Data
+
+- GDP
+
+This data shows the Gross Domestic Product(GDP) as the economic statistic (USA Data)
+
+```{r GDP_load}
+GDP <-read.csv(file = "Data/gdp_csv.csv")%>% rename(GDP = Value) %>% filter(Year > 1989)
+GDP_wld<- GDP %>% filter(Country.Name == "World")
+GDP %>% filter(Country.Code == "USA") %>% head()
+
+```
+
+- Average Learning Outcome(ALO)
+
+This data shows the National Average Learning Outcome(ALO) as the educational statistic (USA Data) 
+
+```{r ALO_load}
+ALO_tbl <- as.tbl(read.csv(file = "Data/average-harmonized-learning-outcome-scores.csv")) %>% filter(Code != "") %>% rename(ALO = Average.harmonised.learning.outcome.score..Altinok..Angrist..and.Patrinos..2018......score..) %>% filter(Year%%5 == 0,Year >= 1990)
+
+ALO_tbl %>% filter(Code == "USA") %>% head()
+```
+Variables of Interest:
+
+- Num_Net_Users
+- Mobile_per_100
+- Percent_Internet
+- Monthly_Users
+- pop
+- GDP
+- ALO
+
+
+# Data Analysis
+
+# World Data
+
+## Create DF with World Data (wld_data)
+
+Using the data we just gathered and discussed, we must first show the trends of the data as a whole, using World data to determine how the countries we explore compare to the global average.
+First we consolidate the disparate dataframes into one `wld_data` Dataframe.
+
+
+```{r wld_data_init}
+wld_data <- full_join(wld_pop,net_users_wld,by = "Year") %>% left_join(mobile_use_wld, by = "Year") %>% left_join(net_per_wld, by = "Year") %>% left_join(GDP_wld, by = "Year") %>% select(Entity = Country.Name.y, Year, pop, Num_Net_Users, Mobile_Per_100, Percent_Internet, GDP) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) %>% mutate(GDP_Capita = GDP/pop)
+wld_data
+
+```
+
+
+## Plotting
+
+### Population, Internet users, mobile users
+
+First, lets graph the world population, number of mobile subscriptions, and the number of broadband/wi-fi internet users. This graph clearly illustrates how pervasive technology is in our modern lives. 
+
+```{r}
+
+ggplot(wld_data)+
+  geom_line(aes(Year,pop, color = "Global Population"))+
+  geom_line(aes(Year,Num_Net_Users, color = "Number of Internet Users"))+
+  geom_line(aes(Year,mobile_pop, color = "Number of Mobile Users"))+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  scale_color_discrete("Dataset")+
+  labs(title = "Population, Internet Users, and Mobile Users over Time",x = "Time(Years)", y = "Number of People")
+  
+# Make it Pretty
+  
+```
+
+### GDP
+
+Now we graph the GDP per Capita to provide a mean baseline to judge our selected countries how they compare to the global average.
+
+```{r}
+ggplot(wld_data)+
+  geom_line(aes(Year,GDP_Capita))+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  labs(title = "World GDP per Capita over time", x = "Time(Years)", y = "Nominal GDP per Capita (In current USD)")
+```
+
+### Internet and Mobile Users (%)
+
+Then we analyse the world Mobile User and Internet users by percent(%). This is again just a baseline to compare the our selected countries.
+
+```{r}
+
+  
+mob_100 <- mobile_use_wld %>% select(Year, val = Mobile_Per_100)
+per_int <- net_per_wld %>% filter(Year < 2016) %>% select(Year,val = Percent_Internet)
+ggplot(NULL, aes(Year, val)) + 
+  geom_col(aes(fill = "Monthly Mobile Users"), data = mob_100, alpha = 0.5,position = "dodge") +
+  geom_col(aes(fill = "Percent of Population with wired internet access"), data = per_int, alpha = 
+  0.5,position = "dodge")+
+  scale_y_continuous(limits = c(0,100))+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  scale_fill_discrete("Dataset")+
+  labs(title = "Percent Monthly Mobile Users and Population with Wired Internet Access ", x = "Time(Years)",
+  y = "Percent(%)") 
+
+
+
+```
+
+### Social Media
+
+With Social Media being a major contributor to the rapid assimilation of the internet, it can that over barely a decade, industry titans like Facebook and Youtube have over 1.5 billion monthly users.
+
+```{r}
+ggplot(sm_user)+
+  geom_line(aes(Year,Monthly_Users))+
+  scale_x_continuous(limits = c(2005,2018), breaks = c(2005,2010,2015))+
+  facet_wrap(vars(Entity))+
+  labs(title = "Social Media Growth over Time", x = "Time(Years)", y = "Monthly Users")
+```
+
+
+# Country Comparisons
+Now lets compare pairs of countries to see how what their similarities and differences can tell us about their respective situations.
+
+## France and Germany
+
+Lets compare the two largest rivals in the EU.
+
+### Making the Dataframe(s)
+
+First we create FR and DE dataframes to combine and create a World-France-Germany dataframe to make comparisons
+```{r FR-data}
+FR_data <- left_join(pop_raw %>% filter(Country.Code == "FRA"),net_users_raw %>% filter(Code == "FRA"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "FRA"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "FRA")) %>% left_join(GDP) %>% filter(Country.Code == "FRA")%>% left_join(ALO_tbl) %>% filter(Code == "FRA") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
+FR_data %>% head()
+```
+
+```{r DE-data}
+
+DE_data <- left_join(pop_raw %>% filter(Country.Code == "DEU"),net_users_raw %>% filter(Code == "DEU"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "DEU"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "DEU")) %>% left_join(GDP) %>% filter(Country.Code == "DEU") %>% left_join(ALO_tbl) %>% filter(Code == "DEU") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
+DE_data %>% head()
+```
+
+
+```{r World-France-Germany}
+
+WFD_data <- bind_rows(wld_data,FR_data,DE_data) %>% mutate(GDP_Capita = GDP/pop)
+WFD_data 
+
+```
+
+Two countries that have been intertwined since their inceptions. Both economic and cultural powerhouses of Western Europe, this comparison will help us have a frame of reference for further inquiry.
+
+### Population
+
+First we compare the Populations of France and Germany. Germany has had a consistently higher population despite the dip in the early 2010's. France, however, has been steadily growing during the entire timeframe.
+```{r pop_1}
+ggplot(WFD_data %>% filter(Entity != "World"))+
+  geom_line(aes(Year,pop,color = Entity))+
+  scale_color_brewer(type = "qual", palette = 6, aesthetics = "color")+
+  scale_y_continuous(limits = c(50000000,90000000))+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  scale_color_discrete("Country")+
+  labs(title = "Populations of France and Germany", x = "Time(Years)", y = "Population")
+```
+
+### Internet Infrastructure
+
+Both these countries have wildly better internet access than the world average, and it will not be hard to see why. As hubs of tourism, industry, manufacturing, design, and commerce, these countries need to be equipped with robust and powerful internet infrastructure and access to keep up with the other global powerhouses, such as China and the USA.
+
+Now the internet access graphs for both countries
+```{r Internet_1}
+WFD_PI <- ggplot(WFD_data)+
+  geom_line(aes(Year,Percent_Internet, color = Entity))+
+  scale_color_brewer(type = "qual", palette = 6, aesthetics = "color")+
+  scale_y_continuous(limits = c(0,100))+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  labs(title = "Percent Internet Access" ,x = "Time(Years)", y = "Percent(%)")
+  
+
+WFD_PM <- ggplot(WFD_data)+
+  geom_line(aes(Year,Mobile_Per_100, color = Entity))+
+  scale_color_brewer(type = "qual", palette = 6, aesthetics = "color")+
+  scale_y_continuous(limits = c(0,135))+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  labs(title = "Percent Mobile Subscriptions",x = "Time(Years)", y = "Percent(%)")
+  
+ggarrange(WFD_PI,WFD_PM,nrow = 2,ncol = 1)
+```
+
+
+
+### GDP per Capita
+
+Both these countries also have very similar GDPs, especially over time. While Germany edges out France by the end of the data set, Both these countries are incredibly wealthy compared to the World GDP(in blue).
+
+```{r GDP_1}
+ggplot(WFD_data)+ #%>% filter(Entity != "World"))+
+  geom_line(aes(Year,GDP_Capita, color = Entity))+
+  scale_color_brewer(type = "qual", palette = 6, aesthetics = "color")+
+  scale_x_continuous(limits = c(1990,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  labs(title = "GDPs of France, Germany, and the World", x = "Time(Years)", y = "GDP per Capita(In USD)")
+```
+
+### Education
+
+The ALO's of both these countries are so close their difference is nearly negligible.
+
+```{r}
+ggplot(WFD_data %>% filter(Entity != "World"))+
+  geom_col(aes(Year,ALO, fill = Entity), position = "dodge")+
+  scale_color_brewer(type = "qual", palette = 6, aesthetics = "fill")+
+  scale_x_continuous( breaks = c(1990,1995,2000,2005,2010,2015))+
+  labs(title = "ALOs of France, Germany, and the World", x = "Time(Years)", y = "ALO Score")
+  
+```
+
+
+Starting with the French in a slight advantage, over the years the scene changes and Germany is on top, but still marginally. Both these countries are quite similar in terms of their education standards, economic output, and internet access. While Germany is better by a hair, both are star examples of a developed, modern country.
+
+## South Korea and Myanmar
+
+Moving onto South Korea and Myanmar, both these countries are located in Asia and have similar populations throughout the timeframe . By comparing their internet access, economies and education, we can start to see the association between population and prosperity.
+
+### Making the Dataframe(s)
+
+We import South Korea data into an independent dataframe
+```{r SK_data}
+SK_data <- left_join(pop_raw %>% filter(Country.Code == "KOR"),net_users_raw %>% filter(Code == "KOR"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "KOR"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "KOR")) %>% left_join(GDP) %>% filter(Country.Code == "KOR")%>% left_join(ALO_tbl) %>% filter(Code == "KOR") %>%  select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop)
+SK_data
+
+
+```
+
+We import Myanmar data into independent dataframe
+```{r MM_data}
+MM_data <- left_join(pop_raw %>% filter(Country.Code == "MMR"),net_users_raw %>% filter(Code == "MMR"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "MMR"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "MMR")) %>% left_join(GDP) %>% filter(Country.Code == "MMR") %>% left_join(ALO_tbl) %>% filter(Code == "MMR") %>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) %>% filter(Year >=1999)
+MM_data
+
+```
+
+We combine the world, Korea and Myanmar data into WKM_data
+```{r World-SK-Myanmar}
+
+WKM_data <- bind_rows(wld_data ,SK_data,MM_data) %>% 
+  filter(Year >= 2001)%>% mutate(GDP_Capita = GDP/pop)
+WKM_data
+```
+### Population
+
+First we plot their populations. We can see that both these countries have had nearly identical population numbers since data is available (Myanmar only has data from 2001 onwards).
+```{r pop_2}
+ggplot(WKM_data %>% filter(Entity != "World"))+
+  geom_col(aes(Year,pop,fill = Entity),position = "dodge")+
+  scale_color_brewer(type = "qual", palette = 2, aesthetics = "fill")+
+  scale_x_continuous(limits = c(2001,2016), breaks = c(2001,2005,2010,2015))+
+  labs(title="Population of South Korea and Myanmar", x = "Time(Years)", y = "Population")
+  
+```
+
+Now to compare their internet coverage
+
+### Internet Infrastructure
+
+Myanmar functionally did not have any internet capacity until 2010 at the earliest. Comparing this with South Korea, the numbers increased the most drastically even before the turn of the century, shooting up from 15% in 1997 to nearly 50% in 1999. This early adoption paid dividends compared to Myanmar's measly 25% in 2016. But in terms of mobile user percentages, Myanmar has increased its numbers drastically from 7% in 2012 to nearly 75& in 2016, showing a trend that countries that don't invest in a wired internet system often opt for mobile. One interesting observation is that Myanmar's mobile infrastructure grew rapidly from 2012 onwards. This may be because Mobile Infrastructure and mobile internet as a whole is cheaper for both consumers and providers.
+
+```{r Internet_2}
+ggplot(WKM_data)+
+  geom_line(aes(Year,Percent_Internet, color = Entity))+
+  scale_color_brewer(type = "qual", palette = 2, aesthetics = "color")+
+  scale_x_continuous(limits = c(2001,2016), breaks = c(2001,2005,2010,2015))+
+  labs(title = "Percentage of South Korea, Myanmar, and the World with Internet Access" ,x = "Time(Years)", 
+  y = "Percent(%)")
+ggplot(WKM_data)+
+  geom_line(aes(Year,Mobile_Per_100, color = Entity))+
+  scale_color_brewer(type = "qual", palette = 2, aesthetics = "color")+
+  scale_x_continuous(limits = c(2001,2016), breaks = c(2001,2005,2010,2015))+
+  labs(title = "Percentage of South Korea, Myanmar, and the World with Mobile Subscriptions" ,x = "Time(Years)", 
+  y = "Percent(%)")
+
+```
+
+### GDP per Capita
+
+Graphing the GDP per Capita, it is easy to see the wealth disparity between these two nations. South Korea's data doesn't prove that internet access leads to greater economic power. However, Myanmar's data clearly shows that around 2010, with the rise of internet and especially mobile users, their GDP per capita accelerated upward and has maintained around $1250 since then. The increased access of the internet seems to have stabilised this country's economy. But regardless of their relative success, their GDP grwoth barely displays on the graph and South Korea clearly outshines it in terms of economy as well.
+
+```{r GDP_2}
+SK_GDP <- ggplot(SK_data)+
+  geom_point(aes(Year,GDP/pop))+
+  scale_x_continuous(limits = c(2001,2016), breaks = c(2001,2005,2010,2015))+
+  labs(title = "GDP per Capita of South Korea" ,x = "Time(Years)", 
+  y = "GDP per Capita(In USD)")
+
+MM_GDP <- ggplot(MM_data)+
+  geom_point(aes(Year,GDP/pop))+
+  scale_x_continuous(limits = c(2001,2016), breaks = c(2001,2005,2010,2015))+
+  labs(title = "GDP per Capita of Myanmar" ,x = "Time(Years)", 
+  y = "GDP per Capita(In USD)")
+
+
+  
+
+WKM_GDP <- ggplot(WKM_data)+
+  geom_point(aes(Year,GDP_Capita, color = Entity))+
+  scale_color_brewer(type = "qual", palette = 2, aesthetics = "color")+
+  scale_x_continuous(limits = c(2001,2016), breaks = c(2001,2005,2010,2015))+
+  labs(title = "GDP per Capita" ,x = "Time(Years)", 
+  y = "GDP per Capita(In USD)")
+
+ggarrange(SK_GDP,MM_GDP,nrow = 2,ncol = 1)
+
+WKM_GDP
+```
+
+### Education
+
+Myanmar does not have any ALO information, which speaks volumes about the status of education and recordkeeping in general, but South Korea has consistently scored higher than Germany, so it would suffice it to say South Korea is far more educated than Myanmar based on the previous analyses. This shows that not only does internet access beget wealth, but wealth begets internet access.
+
+```{r}
+DK_data <- bind_rows(DE_data,SK_data)
+
+ggplot(DK_data, aes(Year,ALO))+
+  geom_col(aes(fill = Entity),position = "dodge")+
+  scale_color_discrete("Country")+
+  scale_x_continuous(limits = c(1989,2016), breaks = c(1990,1995,2000,2005,2010,2015))+
+  labs(title = "South Korea and Germany ALO scores over Time", x = "Time(Years)", y = "ALO Scores")
+  
+```
+
+## Canada and Thailand
+
+Finally, Two countries with a similar number of wired internet users by 2016. Lets assess Canada and Thailand, two extremely different countries, in terms of their cultures and histories.
+
+### Making the Dataframe(s)
+
+We load in each country into their own dataframes and combine them into WCT_data
+```{r CA_data}
+CA_data <- left_join(pop_raw %>% filter(Country.Code == "CAN"),net_users_raw %>% filter(Code == "CAN"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "CAN"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "CAN")) %>% left_join(GDP) %>% filter(Country.Code == "CAN")%>% left_join(ALO_tbl) %>% filter(Code == "CAN") %>% select(Entity,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+CA_data
+
+```
+```{r TL_data}
+TL_data <- left_join(pop_raw %>% filter(Country.Code == "THA"),net_users_raw %>% filter(Code == "THA"),by = "Year") %>% left_join(mobile_use_raw %>% filter(Code == "THA"), by = "Year") %>% left_join(net_per_raw %>% filter(Code == "THA")) %>% left_join(GDP) %>% filter(Country.Code == "THA") %>% left_join(ALO_tbl) %>% filter(Code == "THA")%>% select(Entity = Country.Name,Year,pop,Num_Net_Users,Mobile_Per_100,Percent_Internet,GDP,ALO) %>% mutate(mobile_pop = (Mobile_Per_100*.01)*pop) 
+TL_data
+
+```
+```{r World-Canada-Thailand}
+
+WCT_data <- bind_rows(wld_data,CA_data,TL_data) %>% mutate(GDP_Capita = GDP/pop)
+WCT_data
+```
+
+### Population
+
+While both countries have similar growth, Thailand simply has a much larger population.
+
+```{r pop_3}
+ggplot(WCT_data %>% filter(Entity != "World"))+
+  geom_col(aes(Year,pop,fill = Entity),position = "dodge")
+```
+
+### Internet Infrastructure
+
+While both Canada and Thailand has similar raw numbers of internet users, Thailand's larger populace means that less of Thailand has access to reliable wired networks. However, much like Myanmar, there is a large spike in mobile access, far surpassing Canada and the global average. This seems to indicate that mobile subscription is often a substitute in places with poorer internet access.
+
+
+```{r Internet_3}
+ggplot(WCT_data %>% filter(Entity != "World"))+
+  geom_line(aes(Year,Num_Net_Users, color = Entity))
+ggplot(WCT_data)+
+  geom_line(aes(Year,Percent_Internet, color = Entity))
+ggplot(WCT_data)+
+  geom_line(aes(Year,Mobile_Per_100, color = Entity))
+
+
+```
+
+### GDP per Capita
+
+This GDP per Capita graph quite clearly illustrates the magnitude of separation between these countries, economically speaking. Canada is a global power, with the adequate funding and infrastructure to adopt internet early on, from the mid 90's. This may help explain why Thailand has a much higher mobile user rate, again much like Myanmar.
+
+
+```{r GDP_3}
+ggplot(WCT_data %>% filter(Entity !="World"))+
+  geom_point(aes(Year,GDP_Capita, color = Entity))
+
+```
+
+### Education
+
+The Thai ALO scores plummet from the year 2000. This may be due to the new distraction of the internet, or maybe there was political or social upheaval. But Canada, as a stable, rich nation, maintains or improves their performance.
+
+```{r ALO_3}
+ggplot(WCT_data %>% filter(Entity != "World"))+
+  geom_point(aes(Year,ALO, color = Entity))
+```
+
+  
+## GDP per capita vs mobile % and internet % Plot in 1995,2005,2015
+
+Finally, to see the impact of mobile and wired internet connection on GDP per Capita over time, we plotted mobile % and internet % by GDP per capita for the years 1995,2005, and 2015.
+
+### Making the Dataframe(s)
+
+```{r}
+a <- GDP %>% slice(1200:6520)  %>% rename(Entity = Country.Name)
+b <- pop_raw %>% slice(1216:7058)  %>% rename(Entity = Country.Name)
+c <- mobile_use_raw %>% filter(Code != "")
+d <- net_per_raw %>% filter(Code != "")
+
+GDP_mob <- inner_join(c,b) %>% inner_join(a) %>% inner_join(d) %>%  mutate(GDP_Capita = GDP/pop) %>% filter(Entity != "World") %>% filter(Year%%5 == 0,Year%%10 != 0)%>% select(Entity, Year,GDP_Capita,Mobile_Per_100,Percent_Internet)
+
+GDP_mob %>% filter(Entity != "Afghanistan") %>% head()
+
+```
+
+### Plotting
+
+As the graphs clearly illustrate, for both mobile and wired internet, The GDP per Capita somewhat correlates with mobile %, but correlates strongly with internet %. This is more evidence that internet access, mobile or otherwise, has at least a small effect on the economic wellbeing of countries.
+
+```{r}
+mob <- ggplot(GDP_mob)+
+  geom_point(aes(Mobile_Per_100,GDP_Capita))+
+  facet_wrap(vars(Year))+
+  labs(title = "Mobile Subscription % and GDP per Capita", x = "GDP per Capita", y = "Mobile Subscription(%)")
+int <- ggplot(GDP_mob)+
+  geom_point(aes(Percent_Internet,GDP_Capita))+
+  facet_wrap(vars(Year))+
+  labs(title = "Internet User % and GDP per Capita", x = "GDP per Capita", y = "Internet Users(%)")
+
+ggarrange(mob,int, nrow = 2)
+```
+
+
+
+## Summary/Conclusion
+
+The main idea of this report is to exemplify how internet access affects countries from an economical and educational standpoint. This idea is addressed by examining 6 countries: France, Germany, South Korea, Myanmar, Canada and Thailand, based on their internet availability, GDP and average learning outcome (ALO). In comparing and analyzing these countries it demonstrated that underdeveloped countries preferred mobile usage over broadband, wealthier countries invested into internet access early on, countries with similar economical and educational trends had similar access to the internet. Although it cannot be outright determined if internet access has a positive influence on a country, it can be implied that countries that invested into broadband early have benefited from it from an economical and educational stance. The data selected was limited to many factors that could have helped in exemplifying whether access to the internet affects countries. Regarding economic data consumer price index (CPI), inflation, and unemployment could have given a better understanding of the country’s economic position. Other data like standardized test scores and gradation rates would have helped in contrast education level.
