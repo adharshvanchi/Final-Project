@@ -7,7 +7,7 @@ output:
 ---
 
 `Restate the Problem Statement`
-Problem Statement: Is the Internet and the ways to access it detrimental to human wellbeing?
+Problem Statement: 
 
 Could internet access be a path to more educated, economically powerful country?
 
@@ -540,7 +540,9 @@ ggplot(DK_data, aes(Year,ALO))+
 
 ## Canada and Thailand
 
-Finally, Two countries with similar populations with access to Internet. Lets assess Canada and Thailand.
+Finally, Two countries with a similar number of wired internet users by 2016. Lets assess Canada and Thailand, two extremely different countries, in terms of their cultures and histories.
+
+### Making the Dataframe(s)
 
 We load in each country into their own dataframes and combine them into WCT_data
 ```{r CA_data}
@@ -559,12 +561,20 @@ WCT_data <- bind_rows(wld_data,CA_data,TL_data) %>% mutate(GDP_Capita = GDP/pop)
 WCT_data
 ```
 
-First we take a look at their populations.
+### Population
+
+While both countries have similar growth, Thailand simply has a much larger population.
+
 ```{r pop_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_col(aes(Year,pop,color = Entity),position = "dodge")
 ```
-While both countries have similar growth, Thailand simply has a much larger population.
+
+### Internet Infrastructure
+
+While both Canada and Thailand has similar raw numbers of internet users, Thailand's larger populace means that less of Thailand has access to reliable wired networks. However, much like Myanmar, there is a large spike in mobile access, far surpassing Canada and the global average. This seems to indicate that mobile subscription is often a substitute in places with poorer internet access.
+
+
 ```{r Internet_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_line(aes(Year,Num_Net_Users, color = Entity))
@@ -575,24 +585,29 @@ ggplot(WCT_data)+
 
 
 ```
-While both Canada and Thailand has similar raw numbers of internet users, Thailand's larger populace means that less of Thailand has access to reliable wired networks. Much like Myanmar, There is a much larger spike in mobile access, far surpassing Canada. This may be due to the earlier adoption of internet by the Canadians, leading to a lower demand for mobile internet.
+
+### GDP per Capita
+
+This GDP per Capita graph quite clearly illustrates the magnitude of separation between these countries, economically speaking. Canada is a global power, with the adequate funding and infrastructure to adopt internet early on, from the mid 90's. This may help explain why Thailand has a much higher mobile user rate, again much like Myanmar.
+
 
 ```{r GDP_3}
 ggplot(WCT_data %>% filter(Entity !="World"))+
   geom_point(aes(Year,GDP_Capita, color = Entity))
 
 ```
-This GDP per Capita graph quite clearly illustrates the magnitude of separation between these countries, economically speaking. Canada is a global power, with the adequate funding and infrastructure to adopt internet early on, from the mid 90's. 
+
+### Education
+
+The Thai ALO scores plummet from the year 2000. This may be due to the new distraction of the internet, or maybe there was political or social upheaval. But Canada, as a stable, rich nation, maintains or improves their performance.
 
 ```{r ALO_3}
 ggplot(WCT_data %>% filter(Entity != "World"))+
   geom_point(aes(Year,ALO, color = Entity))
 ```
-The Thai ALO scores plummet from the year 2000. This may be due to the new distraction of the internet, or maybe there was political or social upheaval. But Canada, as a stable, rich nation, maintains or improves their performance.
-
 
   
-## Add GDP per capita vs mobile % Plot with all countries in 1995,2005,2015
+## GDP per capita vs mobile % Plot in 1995,2005,2015
 
 ```{r}
 a <- GDP %>% slice(1200:6520)  %>% rename(Entity = Country.Name)
